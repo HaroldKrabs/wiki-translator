@@ -1,342 +1,316 @@
-# wiki-translator
-Smart Wikipedia article translator (EN→FA) powered by Gemini. Section-aware, link/category adaptation, AI review &amp; modern dark UI
-
 # 📝 Wiki Translator
 
 **ابزار هوشمند ترجمه و پردازش مقالات ویکی‌پدیا با استفاده از مدل‌های زبانی Gemini**
 
-[فارسی](#-فارسی) · [English](#-english)
+فارسی · English
 
 ---
 
-# 🇮🇷 فارسی
+🇮🇷 **فارسی**
 
 ## 📖 معرفی
 
-**Wiki Translator** یک ابزار پایتونی برای دریافت، پردازش و ترجمهٔ مقالات ویکی‌پدیا است که با هدف ساده‌تر کردن فرایند ترجمه و آماده‌سازی محتوای مقالات برای استفاده در ویکی‌پدیا توسعه داده شده است.
+**Wiki Translator** (نسخه ۵.۱) یک ابزار پایتونی پیشرفته برای دریافت، پردازش و ترجمهٔ مقالات ویکی‌پدیا از انگلیسی به فارسی است.
 
-این پروژه از **Google Gemini API** برای ترجمه و پردازش هوشمند متن استفاده می‌کند و در کنار آن، قابلیت دریافت اطلاعات و محتوای مقالات از **Wikipedia API** را دارد.
+این پروژه با هدف ساده‌تر کردن فرایند ترجمه و آماده‌سازی محتوای مقالات برای استفاده در ویکی‌پدیای فارسی توسعه داده شده و از **Google Gemini** برای ترجمه و بازبینی هوشمند استفاده می‌کند.
 
-این برنامه دارای یک رابط گرافیکی برای مدیریت فرایند ترجمه است و می‌تواند با استفاده از چند API Key، درخواست‌های ترجمه را میان کلیدهای مختلف توزیع کند.
-
----
+ویژگی‌های کلیدی نسخه ۵.۱:
+- ترجمهٔ **بخش‌محور** (Section-aware chunking)
+- بازسازی هوشمند لینک‌های داخلی و تطبیق رده‌ها (Categories)
+- حذف لینک‌های قرمز تأییدشده
+- بازبینی نهایی با هوش مصنوعی
+- رابط گرافیکی مدرن با تم تاریک پیش‌فرض، کارت‌های آماری و درخت وضعیت مقالات
+- مدیریت هوشمند چند API Key با اولویت‌بندی خطا و محدودیت نرخ
 
 ## ✨ امکانات
 
-* 🌐 دریافت اطلاعات و محتوای مقالات از Wikipedia
-* 🤖 ترجمهٔ متن با استفاده از Google Gemini
-* 🖥️ رابط گرافیکی برای اجرای آسان برنامه
-* 🔑 پشتیبانی از چند API Key
-* ⚡ مدیریت و توزیع درخواست‌ها میان کلیدهای API
-* 🔄 مدیریت خطا و تلاش مجدد برای درخواست‌های ناموفق
-* 🛡️ مدیریت امن کلیدهای API از طریق متغیرهای محیطی
-* 🧹 پردازش و آماده‌سازی محتوای ویکی
-* 📚 پشتیبانی از ترجمهٔ مقالات و دسته‌بندی‌های ویکی‌پدیا
-* 📝 ثبت خطاها و رویدادهای برنامه در سیستم لاگ
-* 🧩 معماری ماژولار و قابل توسعه
-
----
+| قابلیت | توضیح |
+|--------|--------|
+| 🌐 دریافت محتوا | دریافت ویکی‌کد مقالات و اعضای رده از Wikipedia API |
+| 🤖 ترجمه هوشمند | ترجمه با Gemini (مدل پیش‌فرض: `gemini-3.5-flash-lite`) |
+| 📑 تقسیم بخش‌محور | ترجیح تقسیم بر اساس تیترهای `==` و در صورت نیاز پاراگراف |
+| 🔗 مدیریت لینک | استخراج لینک‌ها، نگاشت به نسخه فارسی (langlinks)، بازسازی لینک‌های متنی و تبدیل `[[en]]` → `[[fa]]` |
+| 🏷️ تطبیق رده‌ها | استخراج `Category:`، نگاشت به `[[رده:...]]` و حذف رده‌های بدون معادل |
+| 🧹 پاکسازی | حذف لینک‌های قرمز تأییدشده + محافظت از قالب‌ها و ارجاعات |
+| 🔍 بازبینی AI | بازبینی تکه‌تکه با همپوشانی برای انسجام و کیفیت نهایی |
+| 🖥️ رابط گرافیکی | تم تاریک/روشن، کارت‌های آماری، نوار پیشرفت، درخت وضعیت مقالات، Pause/Resume/Stop |
+| 🔑 مدیریت کلید | پشتیبانی از چند API Key، امتیازدهی بر اساس خطای ۴۲۹، باطل‌سازی کلید نامعتبر |
+| 🔄 تلاش مجدد | مدیریت هوشمند خطاهای شبکه و محدودیت نرخ |
+| 📝 لاگ کامل | ثبت رویدادها و خطاها در سیستم لاگ |
+| 🧩 معماری ماژولار | ساختار تمیز و قابل توسعه |
 
 ## 🏗️ معماری پروژه
 
-ساختار کلی پروژه به شکل زیر است:
-
-```text
+```
 wiki-translator/
 │
-├── main.py
-├── config.py
-├── key_manager.py
-├── logger_setup.py
-├── translator_core.py
-├── wikipedia_api.py
-├── utils.py
-├── wiki_translator_gui.py
+├── main.py                  # نقطهٔ ورود اصلی
+├── config.py                # تنظیمات، مسیرها و پرامپت‌ها
+├── key_manager.py           # مدیریت و توزیع API Keyها
+├── logger_setup.py          # تنظیم سیستم لاگ
+├── translator_core.py       # هستهٔ ترجمه، بازبینی و pipeline
+├── wikipedia_api.py         # ارتباط با Wikipedia API + پردازش ویکی‌کد
+├── utils.py                 # توابع کمکی (تقسیم متن، مرتب‌سازی فارسی و ...)
+├── wiki_translator_gui.py   # نقطهٔ ورود رابط گرافیکی
 ├── requirements.txt
 ├── .gitignore
 │
 ├── ui/
-│   ├── app.py
-│   ├── styles.py
+│   ├── app.py               # منطق رابط کاربری
+│   ├── styles.py            # تم و استایل‌ها
 │   └── __init__.py
 │
-└── logs/
+├── input/                   # ویکی‌کد خام مقالات (تولید خودکار)
+├── translated/              # خروجی مقالات ترجمه‌شده
+├── .progress/               # ذخیرهٔ پیشرفت برای ادامهٔ ترجمه
+└── logs/                    # فایل‌های لاگ
 ```
 
 ### اجزای اصلی
 
-| فایل                     | توضیح                                        |
-| ------------------------ | -------------------------------------------- |
-| `main.py`                | نقطهٔ ورود اصلی برنامه                       |
-| `translator_core.py`     | هستهٔ ترجمه و ارتباط با مدل زبانی            |
-| `wikipedia_api.py`       | ارتباط با Wikipedia API و پردازش محتوای ویکی |
-| `key_manager.py`         | مدیریت و توزیع API Keyها                     |
-| `config.py`              | تنظیمات اصلی برنامه                          |
-| `utils.py`               | توابع کمکی                                   |
-| `logger_setup.py`        | تنظیم سیستم ثبت لاگ                          |
-| `wiki_translator_gui.py` | اجرای رابط گرافیکی                           |
-| `ui/app.py`              | منطق رابط کاربری                             |
-| `ui/styles.py`           | تنظیمات ظاهری رابط کاربری                    |
+| فایل | توضیح |
+|------|--------|
+| `main.py` | نقطهٔ ورود اصلی برنامه |
+| `translator_core.py` | هستهٔ ترجمه، فراخوانی Gemini، ترجمه عنوان، بازبینی و pipeline کامل |
+| `wikipedia_api.py` | ارتباط با Wikipedia API، استخراج لینک/رده، تطبیق langlinks، حذف لینک قرمز و پاکسازی |
+| `key_manager.py` | مدیریت چند کلید، امتیازدهی، تشخیص ۴۲۹ و باطل‌سازی کلید نامعتبر |
+| `config.py` | تنظیمات، مسیرها، محدودیت‌ها و پرامپت‌های سیستم |
+| `utils.py` | تقسیم متن بخش‌محور، مرتب‌سازی فارسی، توابع کمکی |
+| `logger_setup.py` | پیکربندی سیستم ثبت لاگ |
+| `ui/app.py` | رابط گرافیکی کامل (کنترل، آمار، درخت مقالات، لاگ رنگی) |
+| `ui/styles.py` | تم تاریک/روشن و استایل‌ها |
 
----
+## 🧠 فرایند ترجمه (Pipeline)
+
+```
+Wikipedia
+    │
+    ▼
+دریافت ویکی‌کد مقاله
+    │
+    ▼
+استخراج لینک‌های داخلی + نگاشت به نسخه فارسی (langlinks)
+    │
+    ▼
+استخراج رده‌ها + نگاشت به رده‌های فارسی
+    │
+    ▼
+ترجمهٔ عنوان مقاله
+    │
+    ▼
+تقسیم بخش‌محور (Section-aware chunking)
+    │
+    ▼
+ترجمهٔ هر تکه با لیست لینک‌های مربوطه (Gemini)
+    │
+    ▼
+بازسازی لینک‌های متن ساده از روی fa_map
+    │
+    ▼
+تبدیل [[عنوان انگلیسی]] → [[عنوان فارسی]]
+    │
+    ▼
+تطبیق رده‌ها (Category → رده)
+    │
+    ▼
+حذف لینک‌های قرمز تأییدشده
+    │
+    ▼
+بازبینی نهایی با AI (تکه‌تکه + همپوشانی)
+    │
+    ▼
+پاکسازی نهایی و ذخیرهٔ مقاله
+```
 
 ## ⚙️ پیش‌نیازها
 
-برای اجرای پروژه به موارد زیر نیاز دارید:
-
-* Python 3.10 یا بالاتر
-* اتصال اینترنت
-* یک یا چند Google Gemini API Key
-* دسترسی به Wikipedia API
-
-پیشنهاد می‌شود از **Python 3.12** استفاده کنید.
-
----
+- Python **3.10** یا بالاتر (پیشنهاد: **3.12**)
+- اتصال اینترنت
+- یک یا چند **Google Gemini API Key**
+- دسترسی به Wikipedia API
 
 ## 🚀 نصب
-
-ابتدا پروژه را دریافت کنید:
 
 ```bash
 git clone https://github.com/Arian021h/wiki-translator.git
 cd wiki-translator
 ```
 
-سپس یک محیط مجازی ایجاد کنید:
+ایجاد محیط مجازی:
 
-### Windows
-
+**Windows**
 ```powershell
 python -m venv .venv
 .venv\Scripts\activate
 ```
 
-### Linux / macOS
-
+**Linux / macOS**
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-وابستگی‌ها را نصب کنید:
-
+نصب وابستگی‌ها:
 ```bash
 pip install -r requirements.txt
 ```
 
----
-
 ## 🔑 تنظیم API Key
 
-این پروژه کلیدهای Gemini را مستقیماً داخل کد ذخیره نمی‌کند و آن‌ها را از **Environment Variable** دریافت می‌کند.
+کلیدها **هرگز** داخل کد ذخیره نمی‌شوند و از متغیر محیطی خوانده می‌شوند.
 
-### یک API Key
-
-در Windows PowerShell:
-
+### یک کلید
+**Windows PowerShell:**
 ```powershell
 $env:GEMINI_API_KEY="YOUR_API_KEY"
 ```
 
-در Linux / macOS:
-
+**Linux / macOS:**
 ```bash
 export GEMINI_API_KEY="YOUR_API_KEY"
 ```
 
-### چند API Key
-
-برای استفاده از چند کلید:
-
+### چند کلید
 ```powershell
 $env:GEMINI_API_KEYS="KEY_1,KEY_2,KEY_3"
 ```
-
-یا:
-
-```powershell
-$env:GOOGLE_API_KEYS="KEY_1,KEY_2,KEY_3"
+یا
+```bash
+export GEMINI_API_KEYS="KEY_1,KEY_2,KEY_3"
 ```
 
-کلید واقعی خود را هرگز داخل GitHub، کد منبع یا فایل‌های عمومی قرار ندهید.
-
----
+> ⚠️ هرگز کلید واقعی را داخل GitHub، کد منبع یا فایل‌های عمومی قرار ندهید.
 
 ## ▶️ اجرای برنامه
 
-پس از فعال کردن محیط مجازی و تنظیم API Key:
+پس از فعال کردن محیط مجازی و تنظیم کلید:
 
 ```bash
 python main.py
 ```
 
-در صورت استفاده از رابط گرافیکی:
+یا مستقیماً رابط گرافیکی:
 
 ```bash
 python wiki_translator_gui.py
 ```
 
----
+## 🖥️ رابط گرافیکی
 
-## 🧠 فرایند کلی ترجمه
-
-فرایند اصلی برنامه به صورت کلی شامل مراحل زیر است:
-
-```text
-Wikipedia
-    │
-    ▼
-دریافت مقاله
-    │
-    ▼
-پردازش محتوای Wiki
-    │
-    ▼
-تقسیم و آماده‌سازی متن
-    │
-    ▼
-Google Gemini
-    │
-    ▼
-ترجمه و پردازش
-    │
-    ▼
-بازسازی محتوا
-    │
-    ▼
-مقالهٔ ترجمه‌شده
-```
-
----
+- تم تاریک پیش‌فرض + امکان تغییر به روشن
+- کارت‌های آماری زنده (موفق، ناموفق، در حال انجام و ...)
+- نوار پیشرفت کلی
+- درخت وضعیت مقالات با برچسب‌های رنگی
+- داشبورد وضعیت کلیدهای API
+- لاگ رنگی با سطوح مختلف
+- دکمه‌های Pause / Resume / Stop
+- پشتیبانی از ترجمه بر اساس رده یا لیست مقالات
 
 ## 🔐 امنیت
 
-این پروژه از Environment Variable برای دریافت API Key استفاده می‌کند.
+- کلیدها فقط از طریق Environment Variable خوانده می‌شوند.
+- موارد زیر در `.gitignore` قرار دارند و نباید در Repository باشند:
 
-فایل‌های زیر نباید در Repository قرار بگیرند:
-
-```text
+```
 .env
 *.env
 logs/
 __pycache__/
+.progress/
+input/
+translated/
 ```
-
-این موارد در `.gitignore` پروژه قرار گرفته‌اند.
-
-**هیچ API Key یا Token واقعی را در کد منبع قرار ندهید.**
-
----
 
 ## 📋 مدیریت چند کلید API
 
-در صورتی که چند API Key در اختیار برنامه قرار داده شود، `KeyManager` وظیفهٔ مدیریت آن‌ها را بر عهده دارد.
+کلاس `KeyManager` مسئولیت‌های زیر را بر عهده دارد:
 
-این قابلیت برای پروژه‌هایی که تعداد زیادی درخواست ترجمه ارسال می‌کنند می‌تواند مفید باشد و امکان مدیریت وضعیت کلیدها و استفادهٔ مناسب‌تر از ظرفیت موجود را فراهم می‌کند.
+- توزیع درخواست‌ها بین کلیدهای موجود
+- امتیازدهی بر اساس تعداد خطای ۴۲۹ و موفقیت
+- باطل‌سازی خودکار کلیدهای نامعتبر
+- نمایش وضعیت لحظه‌ای کلیدها در رابط کاربری
 
----
+این قابلیت برای حجم بالای ترجمه بسیار مفید است.
 
 ## 🛠️ وضعیت پروژه
 
-> 🚧 این پروژه در حال توسعه است.
+🚧 **در حال توسعه فعال** (نسخه ۵.۱)
 
-برخی بخش‌ها ممکن است در نسخه‌های آینده تغییر کنند یا بهبود داده شوند.
-
----
+برخی بخش‌ها ممکن است در نسخه‌های آینده تغییر یا بهبود یابند.
 
 ## 🔮 برنامهٔ توسعه
 
-قابلیت‌های احتمالی آینده:
-
-* [ ] پشتیبانی بهتر از ترجمهٔ ساختارهای پیچیدهٔ WikiText
-* [ ] بهبود کیفیت ترجمه
-* [ ] مدیریت پیشرفته‌تر خطاهای API
-* [ ] سیستم صف ترجمه
-* [ ] امکان توقف و ادامهٔ عملیات ترجمه
-* [ ] نمایش پیشرفت ترجمه
-* [ ] تنظیمات پیشرفته‌تر رابط کاربری
-* [ ] پشتیبانی از مدل‌های زبانی بیشتر
-* [ ] امکان انتخاب زبان مبدأ و مقصد
-* [ ] بهبود پردازش Templateها و Referenceها
-* [ ] ایجاد گزارش کامل از عملیات ترجمه
-
----
+- پشتیبانی بهتر از ساختارهای پیچیدهٔ WikiText (جدول، قالب‌های تو در تو و ...)
+- بهبود کیفیت و یکدستی ترجمه
+- سیستم صف ترجمه پیشرفته‌تر
+- امکان انتخاب مدل زبانی از رابط کاربری
+- پشتیبانی از زبان‌های مبدأ/مقصد بیشتر
+- گزارش‌های آماری کامل‌تر از عملیات ترجمه
+- بهبود پردازش Templateها و Referenceها
 
 ## 🤝 مشارکت
 
-Pull Requestها و پیشنهادهای بهبود پروژه مورد استقبال هستند.
-
-برای مشارکت:
+Pull Requestها و پیشنهادهای بهبود مورد استقبال هستند.
 
 ```bash
-git fork
-git clone
 git checkout -b feature/my-feature
-```
-
-پس از اعمال تغییرات:
-
-```bash
+# تغییرات را اعمال کنید
 git add .
 git commit -m "Add new feature"
 git push origin feature/my-feature
 ```
 
-سپس می‌توانید یک Pull Request ایجاد کنید.
-
----
+سپس یک Pull Request باز کنید.
 
 ## ⚠️ نکات مهم
 
-این نرم‌افزار صرفاً یک ابزار کمکی برای ترجمه و پردازش محتوا است.
+این نرم‌افزار صرفاً یک **ابزار کمکی** برای ترجمه و پردازش محتوا است.
 
-خروجی ترجمه باید **قبل از انتشار در ویکی‌پدیا توسط کاربر بررسی و ویرایش شود**.
+خروجی ترجمه **باید** قبل از انتشار در ویکی‌پدیا توسط کاربر بررسی و ویرایش شود.
 
-همچنین استفاده از APIهای شخص ثالث تابع قوانین، محدودیت‌ها و شرایط استفادهٔ ارائه‌دهندگان آن‌ها است.
-
----
+استفاده از APIهای شخص ثالث تابع قوانین، محدودیت‌ها و شرایط استفادهٔ ارائه‌دهندگان آن‌ها است.
 
 ## 📄 مجوز
 
-مجوز پروژه را می‌توان در نسخه‌های بعدی مشخص کرد.
+مجوز پروژه در نسخه‌های بعدی مشخص خواهد شد.
 
 ---
 
-# 🇬🇧 English
+🇬🇧 **English**
 
 ## 📖 Overview
 
-**Wiki Translator** is a Python-based tool for retrieving, processing, and translating Wikipedia articles.
+**Wiki Translator** (v5.1) is a Python tool for retrieving, processing, and translating Wikipedia articles from English to Persian.
 
-The project is designed to simplify the workflow of translating and preparing Wikipedia content for further editing and publication.
+It uses **Google Gemini** for high-quality AI translation and review, while carefully preserving WikiText structure, internal links, categories, and references.
 
-It uses the **Google Gemini API** for AI-powered translation and text processing and communicates with the **Wikipedia API** to retrieve article content and metadata.
-
-The application also provides a graphical user interface and supports managing multiple API keys for large translation workloads.
-
----
+Key highlights of v5.1:
+- **Section-aware** chunking
+- Intelligent internal link reconstruction & category adaptation
+- Confirmed red-link removal
+- AI-powered final review
+- Modern dark-first GUI with metric cards, status tree, and pause/resume
+- Smart multi-API-key management with rate-limit prioritization
 
 ## ✨ Features
 
-* 🌐 Retrieve Wikipedia articles and metadata
-* 🤖 AI-powered translation using Google Gemini
-* 🖥️ Graphical user interface
-* 🔑 Multiple API key support
-* ⚡ API key management and request distribution
-* 🔄 Error handling and retry mechanisms
-* 🛡️ Environment-based API key configuration
-* 📚 Wikipedia category-based workflows
-* 🧹 Wiki content processing
-* 📝 Application logging
-* 🧩 Modular and extensible architecture
-
----
+- 🌐 Fetch article content and category members from Wikipedia API
+- 🤖 AI translation powered by Gemini (`gemini-3.5-flash-lite`)
+- 📑 Section-aware text splitting (prefer `==` sections, fallback to paragraphs)
+- 🔗 Link extraction → langlinks mapping → plain-text link rebuild → `[[en]]` → `[[fa]]`
+- 🏷️ Category extraction and adaptation to Persian `[[رده:...]]`
+- 🧹 Removal of confirmed red links + protection of templates/references
+- 🔍 Chunked AI review with overlap for consistency
+- 🖥️ Modern GUI (dark theme by default, metric cards, colored status tree, pause/resume/stop)
+- 🔑 Multi-key support with scoring, 429 handling, and invalid-key invalidation
+- 🔄 Robust retry logic for network and rate-limit errors
+- 📝 Comprehensive logging
+- 🧩 Modular and extensible architecture
 
 ## 🏗️ Project Structure
 
-```text
+```
 wiki-translator/
-│
 ├── main.py
 ├── config.py
 ├── key_manager.py
@@ -346,249 +320,110 @@ wiki-translator/
 ├── utils.py
 ├── wiki_translator_gui.py
 ├── requirements.txt
-├── .gitignore
-│
 ├── ui/
 │   ├── app.py
 │   ├── styles.py
 │   └── __init__.py
-│
+├── input/
+├── translated/
+├── .progress/
 └── logs/
 ```
 
-### Main Components
+## 🧠 Translation Pipeline
 
-| File                     | Description                                         |
-| ------------------------ | --------------------------------------------------- |
-| `main.py`                | Main application entry point                        |
-| `translator_core.py`     | Translation engine and LLM communication            |
-| `wikipedia_api.py`       | Wikipedia API communication and WikiText processing |
-| `key_manager.py`         | API key management                                  |
-| `config.py`              | Application configuration                           |
-| `utils.py`               | Utility functions                                   |
-| `logger_setup.py`        | Logging configuration                               |
-| `wiki_translator_gui.py` | GUI entry point                                     |
-| `ui/app.py`              | GUI application logic                               |
-| `ui/styles.py`           | GUI styling                                         |
-
----
+```
+Wikipedia
+    │
+    ▼
+Fetch wikitext
+    │
+    ▼
+Extract internal links + map to FA via langlinks
+    │
+    ▼
+Extract categories + map to Persian categories
+    │
+    ▼
+Translate title
+    │
+    ▼
+Section-aware chunking
+    │
+    ▼
+Translate each chunk (with relevant link list)
+    │
+    ▼
+Rebuild plain-text links from fa_map
+    │
+    ▼
+Convert [[en]] → [[fa]]
+    │
+    ▼
+Adapt categories (Category → رده)
+    │
+    ▼
+Remove confirmed red links
+    │
+    ▼
+AI review (chunked + overlap)
+    │
+    ▼
+Final cleanup & save
+```
 
 ## ⚙️ Requirements
 
-You will need:
-
-* Python 3.10+
-* Internet connection
-* One or more Google Gemini API keys
-* Access to the Wikipedia API
-
-**Python 3.12 is recommended.**
-
----
+- Python 3.10+ (3.12 recommended)
+- Internet connection
+- One or more Google Gemini API keys
+- Wikipedia API access
 
 ## 🚀 Installation
-
-Clone the repository:
 
 ```bash
 git clone https://github.com/Arian021h/wiki-translator.git
 cd wiki-translator
-```
-
-Create a virtual environment:
-
-### Windows
-
-```powershell
 python -m venv .venv
-.venv\Scripts\activate
-```
-
-### Linux / macOS
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
-Install the required dependencies:
-
-```bash
+# activate the virtual environment
 pip install -r requirements.txt
 ```
 
----
-
 ## 🔑 API Key Configuration
 
-API keys should **not** be hard-coded into the source code.
+Keys are loaded from environment variables only.
 
-The application reads Gemini credentials from environment variables.
-
-### Single API Key
-
-Windows PowerShell:
-
-```powershell
-$env:GEMINI_API_KEY="YOUR_API_KEY"
-```
-
-Linux / macOS:
-
+**Single key:**
 ```bash
 export GEMINI_API_KEY="YOUR_API_KEY"
 ```
 
-### Multiple API Keys
-
-```powershell
-$env:GEMINI_API_KEYS="KEY_1,KEY_2,KEY_3"
+**Multiple keys:**
+```bash
+export GEMINI_API_KEYS="KEY_1,KEY_2,KEY_3"
 ```
 
-or:
+Never commit real API keys to the repository.
 
-```powershell
-$env:GOOGLE_API_KEYS="KEY_1,KEY_2,KEY_3"
-```
-
-Never commit real API keys, passwords, tokens, or other secrets to GitHub.
-
----
-
-## ▶️ Running the Application
-
-After activating the virtual environment and configuring the API key:
+## ▶️ Running
 
 ```bash
 python main.py
-```
-
-To launch the graphical interface:
-
-```bash
+# or
 python wiki_translator_gui.py
 ```
 
----
-
-## 🧠 Translation Workflow
-
-The general workflow looks like this:
-
-```text
-Wikipedia
-    │
-    ▼
-Article Retrieval
-    │
-    ▼
-WikiText Processing
-    │
-    ▼
-Text Preparation
-    │
-    ▼
-Google Gemini
-    │
-    ▼
-Translation & Processing
-    │
-    ▼
-Content Reconstruction
-    │
-    ▼
-Translated Article
-```
-
----
-
-## 🔐 Security
-
-API credentials are loaded through environment variables instead of being stored directly in the source code.
-
-The following files and directories should not be committed:
-
-```text
-.env
-*.env
-logs/
-__pycache__/
-```
-
-These are already excluded through `.gitignore`.
-
-**Never publish real API keys or tokens in the repository.**
-
----
-
-## 📋 Multiple API Key Management
-
-When multiple API keys are provided, the `KeyManager` component manages the available keys and their usage.
-
-This can be useful for applications that perform a large number of translation requests and need a centralized way to manage multiple API credentials.
-
----
-
 ## 🛠️ Project Status
 
-> 🚧 **Work in Progress**
-
-The project is actively being developed and some components may change in future versions.
-
----
-
-## 🔮 Roadmap
-
-Possible future improvements include:
-
-* [ ] Better support for complex WikiText structures
-* [ ] Improved translation quality
-* [ ] Advanced API error handling
-* [ ] Translation queue system
-* [ ] Pause and resume translation jobs
-* [ ] Translation progress tracking
-* [ ] Advanced GUI configuration
-* [ ] Support for additional language models
-* [ ] Source and target language selection
-* [ ] Improved Template and Reference processing
-* [ ] Detailed translation reports
-
----
-
-## 🤝 Contributing
-
-Contributions, suggestions, and pull requests are welcome.
-
-A typical workflow:
-
-```bash
-git fork
-git clone
-git checkout -b feature/my-feature
-```
-
-After making your changes:
-
-```bash
-git add .
-git commit -m "Add new feature"
-git push origin feature/my-feature
-```
-
-Then open a Pull Request.
-
----
+🚧 **Actively developed** (v5.1)
 
 ## ⚠️ Disclaimer
 
-This software is intended as an **assistance tool for translation and content processing**.
+This tool is intended as an **assistance** utility.  
+All generated translations **must** be reviewed and edited by a human before being published on Wikipedia.
 
-Generated translations should be **reviewed and edited by a human before being published on Wikipedia**.
-
-Use of third-party APIs is subject to the terms, policies, quotas, and limitations of their respective providers.
-
----
+Use of third-party APIs is subject to their respective terms and quotas.
 
 ## 📄 License
 
-The project license can be defined in a future release.
+License will be specified in a future release.
